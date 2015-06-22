@@ -1,8 +1,4 @@
 ---
-- name: Remove the default docroot
-  file: path=/var/www/html state=absent recurse=no
-  ignore_errors: True
-
 - name: Ensure {{ wordpress_dir }} exists
   command: /usr/bin/test -d {{ wordpress_dir }}
   register: dir_exists
