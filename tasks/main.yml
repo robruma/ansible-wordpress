@@ -15,8 +15,9 @@
   unarchive: src={{ wordpress_dir }}/latest.tar.gz dest={{ wordpress_dir }} copy=no
 
 - name: Rename the extracted Wordpress directory
-  command: mv -f {{ wordpress_dir }}/wordpress {{ wordpress_dir }}/{{ site_name }}
+  command: mv {{ wordpress_dir }}/wordpress {{ wordpress_dir }}/{{ site_name }}
   register: dir_rename
+  ignore_errors: True
 
 - name: Copy wp-config.php file inside {{ site_name }} directory
   when: dir_rename|success
