@@ -27,4 +27,4 @@
   template: src=wp-config.php.j2 dest={{ wordpress_dir }}/{{ site_name }}/wp-config.php
 
 - name: Reset permissions on {{ site_name }} directory
-  file: state=directory path={{ wordpress_dir }}/{{ website_name }} owner={{ apache_user }} group={{ apache_group }} recurse=yes
+  file: state=directory path={{ wordpress_dir }}/{{ site_name }} owner={{ apache_user }} group={{ apache_group }} recurse=yes
