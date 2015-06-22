@@ -15,12 +15,13 @@
   unarchive: src={{ wordpress_dir }}/latest.tar.gz dest={{ wordpress_dir }} copy=no
 
 - name: Rename the extracted Wordpress directory
-  command: mv {{ wordpress_dir }}/wordpress {{ wordpress_dir }}/{{ site_name }}
+  command: mv -f {{ wordpress_dir }}/wordpress {{ wordpress_dir }}/{{ site_name }}
   register: dir_rename
 
 - name: Copy wp-config.php file inside {{ site_name }} directory
   when: dir_rename|success
   template: src=wp-config.php.j2 dest={{ wordpress_dir }}/{{ site_name }}/wp-config.php
+  notify: restart apache
 
 - name: Reset permissions on {{ site_name }} directory
   file: state=directory path={{ wordpress_dir }}/{{ site_name }} owner={{ apache_user }} group={{ apache_group }} recurse=yes
