@@ -1,0 +1,30 @@
+---
+- name: Remove the default docroot
+  file: path=/var/www/html state=absent recurse=no
+  ignore_errors: True
+
+- name: Ensure {{ wordpress_dir }} exists
+  command: /usr/bin/test -d {{ wordpress_dir }}
+  register: dir_exists
+  ignore_errors: True
+
+- name: Create {{ wordpress_dir }}
+  when: dir_exists.rc != 0
+  file: state=directory path={{ wordpress_dir }} owner={{ apache_user }} group={{ apache_group }} mode=0755 recurse=yes
+
+- name: Get the latest Wordpress package
+  get_url: url={{ wordpress_package_url }} dest={{ wordpress_dir }}/latest.tar.gz
+
+- name: Extract Wordpress package
+  unarchive: src={{ wordpress_dir }}/latest.tar.gz dest={{ wordpress_dir }} copy=no
+
+- name: Rename the extracted Wordpress directory
+  command: mv {{ wordpress_dir }}/wordpress {{ wordpress_dir }}/{{ site_name }}
+  register: dir_rename
+
+- name: Copy wp-config.php file inside {{ site_name }} directory
+  when: dir_rename|success
+  template: src=wp-config.php.j2 dest={{ wordpress_dir }}/{{ site_name }}/wp-config.php
+
+- name: Reset permissions on {{ site_name }} directory
+  file: state=directory path={{ wordpress_dir }}/{{ website_name }} owner={{ apache_user }} group={{ apache_group }} recurse=yes

@@ -1,0 +1,4 @@
+---
+dependencies:
+ - { role: geerlingguy.ansible-role-apache }
+ - { role: geerlingguy.ansible-role-php }
