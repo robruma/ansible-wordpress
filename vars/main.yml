@@ -1,7 +1,7 @@
 ---
 apache_user: apache
 apache_group: apache
-site_name: wordpress
+site_name: wordpress.org
 wordpress_dir: /var/www
 wordpress_package_url: http://wordpress.org/latest.tar.gz
 wordpress_db_user: wordpress
