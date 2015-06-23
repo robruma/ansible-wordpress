@@ -1,4 +1,10 @@
 ---
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_os_family }}-{{ ansible_distribution_release }}.yml"
+    - "{{ ansible_os_family }}.yml"
+    - default.yml
+
 - name: Ensure {{ apache_base_dir }} exists
   command: /usr/bin/test -d {{ apache_base_dir }}
   register: dir_exists
