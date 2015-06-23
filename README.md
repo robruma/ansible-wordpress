@@ -1,12 +1,15 @@
 Ansible Wordpress
 --------
+
 Ansible Role that installs WordPress
 
 ## Dependencies
-geerlingguy.apache
-geerlingguy.php
+
+  geerlingguy.apache
+  geerlingguy.php
 
 ## Example Playbook
+
   ---
   - hosts: webservers
     roles:
