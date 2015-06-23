@@ -24,6 +24,10 @@
     msg: "wordpress_db_host has not been defined"
   when: wordpress_db_host|default(False) == False
 
+- name: Generate random salts for Wordpress config
+  local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
+  register: "wordpress_salt"
+
 - name: Ensure {{ apache_base_dir }} exists
   command: /usr/bin/test -d {{ apache_base_dir }}
   register: dir_exists
