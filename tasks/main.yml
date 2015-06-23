@@ -1,9 +1,28 @@
 ---
-- include_vars: "{{ item }}"
-  with_first_found:
-    - "{{ ansible_os_family }}-{{ ansible_distribution_release }}.yml"
-    - "{{ ansible_os_family }}.yml"
-    - default.yml
+- name: Check for site_name var
+  fail:
+    msg: "site_name has not been defined"
+  when: site_name|default(False) == False
+
+- name: Check for wordpress_db_user var
+  fail:
+    msg: "wordpress_db_user has not been defined"
+  when: wordpress_db_user|default(False) == False
+
+- name: Check for wordpress_db_password var
+  fail:
+    msg: "wordpress_db_password has not been defined"
+  when: wordpress_db_password|default(False) == False
+
+- name: Check for wordpress_db_name var
+  fail:
+    msg: "wordpress_db_name has not been defined"
+  when: wordpress_db_name|default(False) == False
+
+- name: Check for wordpress_db_host var
+  fail:
+    msg: "wordpress_db_host has not been defined"
+  when: wordpress_db_host|default(False) == False
 
 - name: Ensure {{ apache_base_dir }} exists
   command: /usr/bin/test -d {{ apache_base_dir }}

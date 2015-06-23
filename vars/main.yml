@@ -1,1 +1,5 @@
 ---
+apache_base_dir: /var/www
+apache_group: apache
+apache_user: apache
+wordpress_package_url: http://wordpress.org/latest.tar.gz
