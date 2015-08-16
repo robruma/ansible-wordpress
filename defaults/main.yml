@@ -2,4 +2,6 @@
 apache_base_dir: /var/www
 apache_group: apache
 apache_user: apache
+wordpress_protocol: http
+wordpress_force_ssl_admin: true
 wordpress_package_url: http://wordpress.org/latest.tar.gz
