@@ -64,8 +64,11 @@ $table_prefix  = 'wp_';
 define('WP_DEBUG', false);
 
 /** Define site URL and home */
-define('WP_SITEURL', 'http://{{ wordpress_site_name }}');
-define('WP_HOME', 'http://{{ wordpress_site_name }}');
+define('WP_SITEURL', '{{ wordpress_protocol }}://{{ wordpress_site_name }}');
+define('WP_HOME', '{{ wordpress_protocol }}://{{ wordpress_site_name }}');
+
+/** Control SSL Admin */
+define('FORCE_SSL_ADMIN', {{ wordpress_force_ssl_admin }});
 
 /* That's all, stop editing! Happy blogging. */
 
