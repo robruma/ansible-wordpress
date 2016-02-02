@@ -29,30 +29,28 @@
   register: "wordpress_salt"
 
 - name: Ensure {{ apache_base_dir }} exists
-  command: /usr/bin/test -d {{ apache_base_dir }}
+  stat: {{ apache_base_dir }}
   register: dir_exists
-  ignore_errors: True
 
 - name: Ensure {{ apache_base_dir }}/{{ wordpress_site_name }}/wp-config.php exists
   stat: path={{ apache_base_dir }}/{{ wordpress_site_name }}/wp-config.php
   register: wp_config_file
-  ignore_errors: True
 
 - name: Create {{ apache_base_dir }}
-  when: dir_exists.rc != 0
+  when: dir_exists.stat.isdir is defined and dir_exists.stat.isdir
   file: state=directory path={{ apache_base_dir }} owner={{ apache_user }} group={{ apache_group }} mode=0755 recurse=yes
 
 - name: Get the latest Wordpress package
-  when: wp_config_file.exists == False
+  when: not wp_config_file.stat.exists
   get_url: url={{ wordpress_package_url }} dest={{ apache_base_dir }}/latest.tar.gz
 
 - name: Extract Wordpress package
-  when: wp_config_file.exists == False
+  when: not wp_config_file.stat.exists
   unarchive: src={{ apache_base_dir }}/latest.tar.gz dest={{ apache_base_dir }} copy=no
 
 - name: Rename the extracted Wordpress directory
   command: mv {{ apache_base_dir }}/wordpress {{ apache_base_dir }}/{{ wordpress_site_name }}
-  when: wp_config_file.exists == False
+  when: not wp_config_file.stat.exists
   register: dir_rename
   ignore_errors: True
 
