@@ -71,5 +71,5 @@
   register: wordpress_package
 
 - name: Remove latest WordPress package
-  when: wordpress_package.stat.exists and extract_package|success
+  when: wordpress_package.stat.exists and extract_wordpress|success
   file: state=absent path={{ apache_base_dir }}/latest.tar.gz
