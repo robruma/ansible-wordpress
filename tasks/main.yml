@@ -33,9 +33,9 @@
   register: dir_exists
   ignore_errors: True
 
-- name: Ensure {{ apache_base_dir }}/{{ wordpress_site_name }} exists
-  command: /usr/bin/test -d {{ apache_base_dir }}/{{ wordpress_site_name }}
-  register: site_dir_exists
+- name: Ensure {{ apache_base_dir }}/{{ wordpress_site_name }}/wp-config.php exists
+  stat: path={{ apache_base_dir }}/{{ wordpress_site_name }}/wp-config.php
+  register: wp_config_file
   ignore_errors: True
 
 - name: Create {{ apache_base_dir }}
@@ -43,16 +43,16 @@
   file: state=directory path={{ apache_base_dir }} owner={{ apache_user }} group={{ apache_group }} mode=0755 recurse=yes
 
 - name: Get the latest Wordpress package
-  when: site_dir_exists.rc != 0
+  when: wp_config_file.exists == False
   get_url: url={{ wordpress_package_url }} dest={{ apache_base_dir }}/latest.tar.gz
 
 - name: Extract Wordpress package
-  when: site_dir_exists.rc != 0
+  when: wp_config_file.exists == False
   unarchive: src={{ apache_base_dir }}/latest.tar.gz dest={{ apache_base_dir }} copy=no
 
 - name: Rename the extracted Wordpress directory
   command: mv {{ apache_base_dir }}/wordpress {{ apache_base_dir }}/{{ wordpress_site_name }}
-  when: site_dir_exists.rc != 0
+  when: wp_config_file.exists == False
   register: dir_rename
   ignore_errors: True
 
