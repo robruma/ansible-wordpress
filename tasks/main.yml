@@ -24,7 +24,7 @@
     msg: "wordpress_db_host has not been defined"
   when: wordpress_db_host|default(False) == False
 
-- name: Generate random salts for Wordpress config
+- name: Generate random salts for WordPress config
   local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
   register: "wordpress_salt"
 
@@ -49,18 +49,27 @@
   file: state=directory path={{ apache_base_dir }}/{{ wordpress_site_name }} owner={{ apache_user }} group={{ apache_group }} mode=0755 recurse=yes
   register: site_name_dir
 
-- name: Get the latest Wordpress package
+- name: Get the latest WordPress package
   when: not wp_config_file.stat.exists
   get_url: url={{ wordpress_package_url }} dest={{ apache_base_dir }}/latest.tar.gz
 
-- name: Extract Wordpress package
+- name: Extract WordPress package
   when: not wp_config_file.stat.exists
   command: tar -zxvf {{ apache_base_dir }}/latest.tar.gz -C {{ apache_base_dir }}/{{ wordpress_site_name }} --strip 1
+  register: extract_wordpress
 
-- name: Copy wp-config.php file inside {{ wordpress_site_name }} directory
+- name: Copy wp-config.php file inside {{ apache_base_dir }}/{{ wordpress_site_name }} directory
   when: site_name_dir|success
   template: src=wp-config.php.j2 dest={{ apache_base_dir }}/{{ wordpress_site_name }}/wp-config.php
   notify: restart apache
 
-- name: Reset permissions on {{ wordpress_site_name }} directory
+- name: Reset permissions on {{ apache_base_dir }}/{{ wordpress_site_name }} directory
   file: state=directory path={{ apache_base_dir }}/{{ wordpress_site_name }} owner={{ apache_user }} group={{ apache_group }} recurse=yes
+
+- name: Ensure {{ apache_base_dir }}/latest.tar.gz exists
+  stat: path={{ apache_base_dir }}/latest.tar.gz
+  register: wordpress_package
+
+- name: Remove latest WordPress package
+  when: wordpress_package.stat.exists and extract_package|success
+  file: state=absent path={{ apache_base_dir }}/latest.tar.gz
