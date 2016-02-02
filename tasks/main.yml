@@ -29,7 +29,7 @@
   register: "wordpress_salt"
 
 - name: Ensure {{ apache_base_dir }} exists
-  stat: {{ apache_base_dir }}
+  stat: "{{ apache_base_dir }}"
   register: dir_exists
 
 - name: Ensure {{ apache_base_dir }}/{{ wordpress_site_name }}/wp-config.php exists
